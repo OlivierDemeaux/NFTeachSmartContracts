@@ -21,6 +21,7 @@ contract Governor is Ownable {
     /*                              STATE VARIABLES                             */
     /* -------------------------------------------------------------------------- */
 
+    //Amount of Wmatic needed to stake a course
     uint256 immutable stakeAmount = 1;
 
     uint256 public totalStaked; //in WMatic
@@ -35,7 +36,16 @@ contract Governor is Ownable {
     /*                                   EVENTS                                   */
     /* -------------------------------------------------------------------------- */
 
+    /**
+     * @notice emited when Chainlink Keeper deposit some Wmatic into AAVE's pool
+     * @param amount amount of Wmatic deposited into AAVE
+     */
     event aaveDeposit(uint256 amount);
+
+    /**
+     * @notice emited when an educator withdraw a course and gets refundedm or when Chainlink Keeper deposit some Wmatic into AAVE's pool
+     * @param amount amount of Wmatic withdrew from AAVE
+     */
     event aaveWithdraw(uint256 amount);
 
     /* -------------------------------------------------------------------------- */
@@ -110,9 +120,14 @@ contract Governor is Ownable {
             if (wmatic.balanceOf(address(this)) > 0) {
                 uint256 currWmaticBal = wmatic.balanceOf(address(this));
                 if (currWmaticBal > minReserve) {
-                    _aaveDeposit((currWmaticBal - minReserve));
+                    uint256 amountToDeposit = currWmaticBal - minReserve;
+                    _aaveDeposit(amountToDeposit);
                 } else if (currWmaticBal < minReserve) {
-                    _aaveWithdraw(((minReserve - currWmaticBal)));
+                    uint256 amountToWithdraw = minReserve - currWmaticBal;
+                    //Check to see if Governor has enough aWmatic to withdraw Wmatic in order to refill the reserve
+                    if (amountToWithdraw < aWmatic.balanceOf(address(this))) {
+                        _aaveWithdraw(amountToWithdraw);
+                    }
                 }
             }
         }
@@ -141,8 +156,8 @@ contract Governor is Ownable {
     function _aaveDeposit(uint256 _amount) internal {
         if (_amount > 0) {
             aavePool.supply(address(wmatic), _amount, address(this), 0);
+            emit aaveDeposit(_amount);
         }
-        emit aaveDeposit(_amount);
     }
 
     function _aaveWithdraw(uint256 _amount) internal {
@@ -150,15 +165,8 @@ contract Governor is Ownable {
         if (amountAwmatic >= _amount) {
             aWmatic.approve(address(aavePool), _amount);
             aavePool.withdraw(address(wmatic), _amount, address(this));
+            emit aaveWithdraw(_amount);
         }
-    }
-
-    /* -------------------------------------------------------------------------- */
-    /*                               VIEW FUNCTIONS                               */
-    /* -------------------------------------------------------------------------- */
-
-    function getSBTAddress() external view returns (address) {
-        return (address(sbt));
     }
 }
 

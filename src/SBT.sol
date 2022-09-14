@@ -12,12 +12,10 @@ import "./interface/IGovernor.sol";
  */
 contract SBT is ERC1155, Ownable {
     IGovernor public governor;
-    // Incrementing tokenId
-    uint256 public counterIDs;
 
-    /*//////////////////////////////////////////////////////////////
-                                Events
-    //////////////////////////////////////////////////////////////*/
+    /* -------------------------------------------------------------------------- */
+    /*                                   EVENTS                                   */
+    /* -------------------------------------------------------------------------- */
 
     /**
      * @notice emitted when a new educator is added
@@ -60,9 +58,9 @@ contract SBT is ERC1155, Ownable {
      */
     event Withdrawl(address educator, uint256 amount);
 
-    /*//////////////////////////////////////////////////////////////
-                               Structures
-    //////////////////////////////////////////////////////////////*/
+    /* -------------------------------------------------------------------------- */
+    /*                               Structures                                   */
+    /* -------------------------------------------------------------------------- */
 
     //Test object that keeps track of Educator's address, test hash, lifetime payout from students,
     //price to mint SBT, number of students that passed the test.
@@ -114,6 +112,8 @@ contract SBT is ERC1155, Ownable {
     /* -------------------------------------------------------------------------- */
 
     uint256 public stakingRequired = 1 ether;
+    // Incrementing tokenId
+    uint256 public counterIDs;
 
     /* -------------------------------------------------------------------------- */
     /*                                 MAPPINGS                                   */
@@ -165,7 +165,7 @@ contract SBT is ERC1155, Ownable {
     /**
      * @dev Called whenever a new educator is created
      */
-    function addEducator(address _newEducator) public onlyOwner {
+    function addEducator(address _newEducator) external onlyOwner {
         require(
             educators[_newEducator].active == false,
             "Educator already exists"
@@ -299,9 +299,9 @@ contract SBT is ERC1155, Ownable {
         governor.teacherWithdraw(_tokenId, msg.sender);
     }
 
-    /*//////////////////////////////////////////////////////////////
-                               Getters
-    //////////////////////////////////////////////////////////////*/
+    /* -------------------------------------------------------------------------- */
+    /*                                  Getters                                   */
+    /* -------------------------------------------------------------------------- */
 
     /// @return whether an address is an educator
     function isEducator(address _address) public view returns (bool) {
