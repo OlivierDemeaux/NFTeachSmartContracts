@@ -2,8 +2,8 @@
 
 Simple forge directory with both NFTeach contracts (Governor.sol and SBT.sol), and a forge test file.
 
-!
-
 ## Run the tests
 
-`forge test -vv`
+```sh
+forge test -vv
+```
