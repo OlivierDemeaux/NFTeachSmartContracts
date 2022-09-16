@@ -196,10 +196,12 @@ contract SBT is ERC1155, Ownable {
      */
     function createSBT(uint256 _price, string memory _testHash)
         external
+        payable
         onlyEducator
     {
         //sends the staked ETH to the governor contract for staking operations
-        governor.teacherStaking(counterIDs, msg.sender);
+        // governor.teacherStaking(counterIDs, msg.sender);
+        governor.teacherStaking{value: msg.value}(counterIDs, msg.sender);
         tests[counterIDs] = Test(
             msg.sender,
             _testHash,

@@ -22,7 +22,7 @@ contract Governor is Ownable {
     /* -------------------------------------------------------------------------- */
 
     //Amount of Wmatic needed to stake a course
-    uint256 immutable stakeAmount = 1;
+    uint256 immutable stakeAmount = 0.01 ether;
 
     uint256 public totalStaked; //in WMatic
     uint256 public interval; //in seconds, for Chainlink keeper
@@ -74,18 +74,10 @@ contract Governor is Ownable {
 
     function teacherStaking(uint256 _courseId, address _educator)
         external
+        payable
         onlySBT
     {
-        require(
-            wmatic.allowance(_educator, address(this)) >= stakeAmount,
-            "Make sure you approve the Wmatic contract"
-        );
-        require(
-            wmatic.balanceOf(_educator) >= stakeAmount,
-            "Not enough WMatic"
-        );
-
-        wmatic.transferFrom(_educator, address(this), stakeAmount);
+        require(msg.value == stakeAmount, "You need to send 0.01 eth");
 
         courseStaked[_courseId] = true;
         teacherBalance[_educator] = teacherBalance[_educator] + stakeAmount;
