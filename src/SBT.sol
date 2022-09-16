@@ -35,7 +35,7 @@ contract SBT is ERC1155, Ownable {
      * @param educator address of the educator who creates the test
      * @param mintPrice price of minting the SBT after test completion
      */
-    event createSBT(
+    event CreateSBT(
         uint256 tokenId,
         address educator,
         uint256 mintPrice,
@@ -207,7 +207,7 @@ contract SBT is ERC1155, Ownable {
         tests[counterIDs] = Test(msg.sender, 0, _price, 0, 1, true, false);
         educators[msg.sender].classesCreated += 1;
 
-        emit createSBT(counterIDs, msg.sender, _price, _courseObjectId);
+        emit CreateSBT(counterIDs, msg.sender, _price, _courseObjectId);
 
         counterIDs += 1;
     }
