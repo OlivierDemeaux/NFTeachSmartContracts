@@ -35,7 +35,7 @@ contract SBT is ERC1155, Ownable {
      * @param educator address of the educator who creates the test
      * @param mintPrice price of minting the SBT after test completion
      */
-    event CreateTest(
+    event createSBT(
         uint256 tokenId,
         address educator,
         uint256 mintPrice,
@@ -61,7 +61,7 @@ contract SBT is ERC1155, Ownable {
      * @param educator address of the withdrawing educator
      * @param amount total amount of payoff withdrawn by educator
      */
-    event Withdrawl(address educator, uint256 amount);
+    event Withdrawal(address educator, uint256 amount);
 
     /* -------------------------------------------------------------------------- */
     /*                               Structures                                   */
@@ -207,7 +207,7 @@ contract SBT is ERC1155, Ownable {
         tests[counterIDs] = Test(msg.sender, 0, _price, 0, 1, true, false);
         educators[msg.sender].classesCreated += 1;
 
-        emit CreateTest(counterIDs, msg.sender, _price, _courseObjectId);
+        emit createSBT(counterIDs, msg.sender, _price, _courseObjectId);
 
         counterIDs += 1;
     }
@@ -283,7 +283,7 @@ contract SBT is ERC1155, Ownable {
         );
         require(success, "Call failed");
 
-        emit Withdrawl(msg.sender, leftToPay);
+        emit Withdrawal(msg.sender, leftToPay);
     }
 
     function withdrawCourse(uint256 _tokenId) public onlyEducator {
